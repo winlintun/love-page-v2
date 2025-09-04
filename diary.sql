@@ -1,6 +1,0 @@
-CREATE TABLE diary (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    text TEXT,
-    image BLOB,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);

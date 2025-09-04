@@ -2,7 +2,7 @@ import sqlite3
 from flask import Flask, request, jsonify, send_from_directory
 from werkzeug.utils import secure_filename
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', template_folder='templates')
 
 def get_db():
     conn = sqlite3.connect('diary.db')

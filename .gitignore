@@ -1,0 +1,9 @@
+diary.db
+__pychache__/
+*.pyc   
+instance
+.env
+venv/
+.DS_Store
+*.sqlite3
+*.log
