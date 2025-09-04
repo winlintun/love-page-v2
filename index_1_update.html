@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Love With You</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+
+  <!-- NAVIGATION -->
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#daily">Daily Life</a>
+  </nav>
+
+  <h1 id="home">💕 Love With You 💕</h1>
+
+  <!-- SLIDESHOW -->
+  <div class="slideshow-container">
+    <div class="slide">
+      <img src="static/img/1.jpg" alt="Together Moment">
+      <div class="slide-text">With you, even silence feels like music.</div>
+    </div>
+    <div class="slide">
+      <img src="static/img/2.jpg" alt="Holding Hands">
+      <div class="slide-text">Your smile is the sunrise of my heart.</div>
+    </div>
+    <div class="slide">
+      <img src="static/img/3.jpg" alt="Sweet Hug">
+      <div class="slide-text">I choose you, and I’ll choose you again and again.</div>
+    </div>
+  </div>
+
+  <div class="dots">
+    <span class="dot"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
+  </div>
+
+  <!-- MESSAGE -->
+  <div class="message">
+    <p>
+      You are the poetry I never knew I could write, the warmth I didn’t know I needed, and the love I always dreamed of.
+    </p>
+    <p>
+      Every heartbeat whispers your name. Every day I spend with you is a beautiful story of affection and care.
+    </p>
+    <p>
+      With you, life is full of color, even on the darkest days. You’re my sunshine and my safe space.
+    </p>
+    <p>💖 Happy Birthday, my forever love 💖</p>
+  </div>
+
+  <!-- GALLERY -->
+  <div class="gallery" id="gallery">
+    <h2>📸 Our Moments</h2>
+    <div class="gallery-images" id="galleryImages"></div>
+    <div id="galleryPagination" style="text-align:center; margin:20px 0;"></div>
+  </div>
+
+  <!-- TEXT SLIDESHOW -->
+  <div id="textSlideshow" class="slideshow-container" style="max-width:600px; margin:40px auto 0;"></div>
+
+  <!-- DAILY LIFE -->
+  <div class="daily-life" id="daily">
+    <h2>📝 Daily Life Journal</h2>
+    <p>
+      Today we laughed at something silly, shared snacks while watching our favorite show, and walked together in the evening breeze. These simple, ordinary things become magical just because they’re with you.
+    </p>
+    <p>
+      Every morning, seeing your sleepy smile makes my heart feel full. And at night, I fall asleep grateful—because no matter how long the day was, I still got to love you.
+    </p>
+    <!-- Diary Form -->
+    <form id="diaryForm" enctype="multipart/form-data" style="margin-top:30px; text-align:center;">
+      <textarea id="diaryEntry" name="text" rows="4" cols="50" placeholder="Write your diary entry here..." style="border-radius:8px; padding:10px; font-size:1em;"></textarea><br>
+      <input type="file" id="diaryImage" name="image" accept="image/*" style="margin-top:10px;"><br>
+      <button type="submit" style="margin-top:10px; background:#ff69b4; color:white; border:none; border-radius:6px; padding:8px 18px; font-size:1em; cursor:pointer;">Add Entry</button>
+    </form>
+    <script>
+      async function loadGallery() {
+        const res = await fetch('/diaries');
+        const diaries = await res.json();
+        const gallery = document.getElementById('galleryImages');
+        gallery.innerHTML = diaries
+          .filter(entry => entry.image_url || entry.text) // Show all entries with image or text
+          .map(entry => `
+            <div>
+              ${entry.image_url ? `<img src="${entry.image_url}" alt="Diary Image" class="diary-img">` : ''}
+              <div style="margin-top:8px; text-align:center;">${entry.text || ''}</div>
+            </div>
+          `).join('');
+      }
+
+      document.getElementById('diaryForm').onsubmit = async function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        await fetch('/add_diary', { method: 'POST', body: formData });
+        this.reset();
+        loadGallery();
+      };
+
+      // Only load gallery on page load
+      window.onload = loadGallery;
+    </script>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    Made with heartbeats & stardust 🌟 | Always yours 💌
+  </footer>
+
+  <!-- External JS only -->
+  <script src="static/style.js"></script>
+
+  <!-- GALLERY MODAL -->
+  <div id="galleryModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
+    <div id="modalContent" style="background:#fff; padding:30px 20px; border-radius:16px; max-width:400px; width:90%; box-shadow:0 8px 32px rgba(0,0,0,0.2); position:relative;">
+      <span id="closeModal" style="position:absolute; top:10px; right:18px; font-size:1.6em; cursor:pointer;">&times;</span>
+      <div id="modalText" style="font-size:1.1em; color:#333; text-align:center; max-height:250px; overflow-y:auto;"></div>
+    </div>
+  </div>
+
+  
+</body>
+</html>
