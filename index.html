@@ -7,120 +7,31 @@
 
   <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
-
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(135deg, #ffe4e1, #fff0f5);
-      font-family: 'Quicksand', sans-serif;
-      text-align: center;
-      color: #444;
-    }
-
-    h1 {
-      margin-top: 30px;
-      color: #ff5c8a;
-      font-size: 3em;
-      font-weight: 600;
-    }
-
-    .slideshow-container {
-      position: relative;
-      max-width: 700px;
-      margin: 50px auto 20px;
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
-      background-color: #fff;
-    }
-
-    .slide {
-      display: none;
-      position: relative;
-    }
-
-    .slide img {
-      width: 100%;
-      height: 400px;
-      object-fit: cover;
-      display: block;
-    }
-
-    .slide-text {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      padding: 20px;
-      background: rgba(255, 240, 245, 0.8);
-      font-size: 1.2em;
-      font-weight: 500;
-    }
-
-    .dots {
-      margin: 20px 0;
-    }
-
-    .dot {
-      height: 12px;
-      width: 12px;
-      margin: 0 6px;
-      background-color: #ccc;
-      border-radius: 50%;
-      display: inline-block;
-      transition: background-color 0.6s ease;
-      cursor: pointer;
-    }
-
-    .active {
-      background-color: #ff69b4;
-    }
-
-    .message {
-      max-width: 750px;
-      margin: 40px auto;
-      padding: 0 20px;
-      font-size: 1.3em;
-      line-height: 1.7;
-    }
-
-    footer {
-      margin: 40px 0 20px;
-      font-size: 0.9em;
-      color: #888;
-    }
-
-    @media (max-width: 768px) {
-      h1 {
-        font-size: 2.2em;
-      }
-      .slide img {
-        height: 300px;
-      }
-      .slide-text {
-        font-size: 1em;
-      }
-      .message {
-        font-size: 1.1em;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="static/style.css">
 </head>
 <body>
 
-  <h1>💕 Love With You 💕</h1>
+  <!-- NAVIGATION -->
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#daily">Daily Life</a>
+  </nav>
 
+  <h1 id="home">💕 Love With You 💕</h1>
+
+  <!-- SLIDESHOW -->
   <div class="slideshow-container">
     <div class="slide">
-      <img src="img/1.jpg" alt="Together Moment">
+      <img src="static/img/1.jpg" alt="Together Moment">
       <div class="slide-text">With you, even silence feels like music.</div>
     </div>
     <div class="slide">
-      <img src="img/2.jpg" alt="Holding Hands">
+      <img src="static/img/2.jpg" alt="Holding Hands">
       <div class="slide-text">Your smile is the sunrise of my heart.</div>
     </div>
     <div class="slide">
-      <img src="img/3.jpg" alt="Sweet Hug">
+      <img src="static/img/3.jpg" alt="Sweet Hug">
       <div class="slide-text">I choose you, and I’ll choose you again and again.</div>
     </div>
   </div>
@@ -131,6 +42,7 @@
     <span class="dot"></span>
   </div>
 
+  <!-- MESSAGE -->
   <div class="message">
     <p>
       You are the poetry I never knew I could write, the warmth I didn’t know I needed, and the love I always dreamed of.
@@ -144,29 +56,75 @@
     <p>💖 Happy Birthday, my forever love 💖</p>
   </div>
 
+  <!-- GALLERY -->
+  <div class="gallery" id="gallery">
+    <h2>📸 Our Moments</h2>
+    <div class="gallery-images" id="galleryImages"></div>
+    <div id="galleryPagination" style="text-align:center; margin:20px 0;"></div>
+  </div>
+
+  <!-- TEXT SLIDESHOW -->
+  <div id="textSlideshow" class="slideshow-container" style="max-width:600px; margin:40px auto 0;"></div>
+
+  <!-- DAILY LIFE -->
+  <div class="daily-life" id="daily">
+    <h2>📝 Daily Life Journal</h2>
+    <p>
+      Today we laughed at something silly, shared snacks while watching our favorite show, and walked together in the evening breeze. These simple, ordinary things become magical just because they’re with you.
+    </p>
+    <p>
+      Every morning, seeing your sleepy smile makes my heart feel full. And at night, I fall asleep grateful—because no matter how long the day was, I still got to love you.
+    </p>
+    <!-- Diary Form -->
+    <form id="diaryForm" enctype="multipart/form-data" style="margin-top:30px; text-align:center;">
+      <textarea id="diaryEntry" name="text" rows="4" cols="50" placeholder="Write your diary entry here..." style="border-radius:8px; padding:10px; font-size:1em;"></textarea><br>
+      <input type="file" id="diaryImage" name="image" accept="image/*" style="margin-top:10px;"><br>
+      <button type="submit" style="margin-top:10px; background:#ff69b4; color:white; border:none; border-radius:6px; padding:8px 18px; font-size:1em; cursor:pointer;">Add Entry</button>
+    </form>
+    <script>
+      async function loadGallery() {
+        const res = await fetch('/diaries');
+        const diaries = await res.json();
+        const gallery = document.getElementById('galleryImages');
+        gallery.innerHTML = diaries
+          .filter(entry => entry.image_url || entry.text) // Show all entries with image or text
+          .map(entry => `
+            <div>
+              ${entry.image_url ? `<img src="${entry.image_url}" alt="Diary Image" class="diary-img">` : ''}
+              <div style="margin-top:8px; text-align:center;">${entry.text || ''}</div>
+            </div>
+          `).join('');
+      }
+
+      document.getElementById('diaryForm').onsubmit = async function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        await fetch('/add_diary', { method: 'POST', body: formData });
+        this.reset();
+        loadGallery();
+      };
+
+      // Only load gallery on page load
+      window.onload = loadGallery;
+    </script>
+  </div>
+
+  <!-- FOOTER -->
   <footer>
     Made with heartbeats & stardust 🌟 | Always yours 💌
   </footer>
 
-  <script>
-    let slideIndex = 0;
-    const slides = document.getElementsByClassName("slide");
-    const dots = document.getElementsByClassName("dot");
+  <!-- External JS only -->
+  <script src="static/style.js"></script>
 
-    function showSlides() {
-      for (let i = 0; i < slides.length; i++) {
-        slides[i].style.display = "none";
-        dots[i].classList.remove("active");
-      }
-      slideIndex++;
-      if (slideIndex > slides.length) { slideIndex = 1; }
-      slides[slideIndex - 1].style.display = "block";
-      dots[slideIndex - 1].classList.add("active");
-      setTimeout(showSlides, 4000); // Change every 4 seconds
-    }
+  <!-- GALLERY MODAL -->
+  <div id="galleryModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
+    <div id="modalContent" style="background:#fff; padding:30px 20px; border-radius:16px; max-width:400px; width:90%; box-shadow:0 8px 32px rgba(0,0,0,0.2); position:relative;">
+      <span id="closeModal" style="position:absolute; top:10px; right:18px; font-size:1.6em; cursor:pointer;">&times;</span>
+      <div id="modalText" style="font-size:1.1em; color:#333; text-align:center; max-height:250px; overflow-y:auto;"></div>
+    </div>
+  </div>
 
-    showSlides();
-  </script>
-
+  
 </body>
 </html>
