@@ -11,7 +11,7 @@ def get_db():
 
 @app.route('/')
 def home():
-    return send_from_directory('.', 'index_1_update.html')
+    return send_from_directory('.', 'index.html')
 
 
 @app.route('/add_diary', methods=['POST'])
